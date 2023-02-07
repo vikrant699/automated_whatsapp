@@ -19,3 +19,6 @@ Completely automated WhatsApp message sender created using [whatsapp-web.js](htt
 - Do remember, when logging in on the machine for the first time, you might need to scan the QR Code twice or thrice. This has nothing to do with the script but WhatsApp's own buggy feature.
 - The script might be stuck after scanning QR Code for the first time if logging in from a new account. In that case, close it with `ctrl + c` or closing the terminal window. This is again, caused by WhatsApp since it tries to sync all the old messages to the device on first login.
 - Your WhatsApp login details are saved in `.wwebjs_auth` in the same folder as the script. If you share this script anywhere, be sure to share it using the github link since anyone having access to `.wwebjs_auth` folder will get access to your WhatsApp account. The folder is by default hidden, to see it use "Show Hidden Files" in File Explorer > View tab. IT IS VERY IMPORTANT THAT THIS FOLDER ISN'T SHARED ANYWHERE UNINTENTIONALLY.
+
+Note: Update packages with the following commands before running.
+`npx npm-check-updates -u` and `npm install`
