@@ -1,14 +1,9 @@
 // Library and essential declarations
 const { Client, MessageMedia, LocalAuth } = require("whatsapp-web.js");
+const { openFile } = require("macos-open-file-dialog");
 const qrcode = require("qrcode-terminal");
 const XLSX = require("xlsx");
 const readline = require("readline");
-const dialog = require("node-file-dialog");
-const WindowsBalloon = require("node-notifier").WindowsBalloon;
-const notifier = new WindowsBalloon({
-  withFallback: false,
-  customPath: undefined,
-});
 const stdin = process.stdin;
 
 // Variables
@@ -41,13 +36,6 @@ const send = () => {
   // Scan QR Code
   client.on("qr", (qr) => {
     qrcode.generate(qr, { small: true });
-    notifier.notify({
-      title: "WhatsApp",
-      message: "Please scan the QR code.",
-      time: 5000,
-      sound: true,
-      type: "info",
-    });
   });
 
   // Send Message
@@ -131,15 +119,6 @@ const send = () => {
 
       if (results.length - 1 === i) {
         await sleep(60000);
-        notifier.notify({
-          title: "WhatsApp: Completed!",
-          message:
-            "Please check the excel file for more information. Exiting now.",
-          time: 5000,
-          sound: true,
-          type: "info",
-        });
-
         process.exit();
       }
     }
@@ -150,7 +129,7 @@ const keybind = () => {
   return new Promise((resolve) => {
     readline.emitKeypressEvents(stdin);
     stdin.setRawMode(true);
-    stdin.once("keypress", (str, key) => {
+    stdin.once("keypress", async (str, key) => {
       stdin.setRawMode(false);
       // Stop the script with ctrl + c
       if (key.ctrl && key.name === "c") {
@@ -162,34 +141,17 @@ const keybind = () => {
       } else if (str === "2") {
         type = "image";
         console.log("========== TEXT + IMAGE / VIDEO MODE SELECTED ==========");
-        selectFile();
+        const file = await openFile("Select a file");
         send();
       } else if (str === "3") {
         type = "file";
         console.log("========== TEXT + DOCUMENT MODE SELECTED ==========");
-        selectFile();
+        const file = await openFile("Select a file");
         send();
       }
       resolve();
     });
   });
-};
-
-const selectFile = () => {
-  notifier.notify({
-    title: "WhatsApp",
-    message: "Please select the file to send.",
-    time: 5000,
-    sound: true,
-    type: "info",
-  });
-  const config = { type: "open-file" };
-  dialog(config)
-    .then((dir) => (file = dir[0]))
-    .catch((err) => {
-      console.log(err);
-      process.exit();
-    });
 };
 
 // Main function
